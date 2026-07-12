@@ -1,0 +1,17 @@
+global:
+  cattle:
+    systemDefaultRegistry: ""
+
+mcp:
+  readOnly: false
+  image:
+    repository: rancher/harvester-mcp-server
+    tag: dev
+    pullPolicy: IfNotPresent
+
+insecureSkipTls: false
+seLinux:
+  enabled: false
+
+log:
+  level: info
