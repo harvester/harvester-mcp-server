@@ -27,7 +27,8 @@ jobs:
         with:
           persist-credentials: false
         
-      - name: "Read vault secrets"
+      - name: "Read vault secrets for staging prime registry"
+        if: ${{ github.ref_type != 'tag' }}
         uses: rancher-eio/read-vault-secrets@7282bf97898cd1c16c89f837e0bb442e6d384c89 # main
         with:
           secrets: |
@@ -35,22 +36,9 @@ jobs:
             secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials username | STAGING_PRIME_REGISTRY_USERNAME ;
             secret/data/github/repo/${{ github.repository }}/rancher-prime-stg-registry/credentials password | STAGING_PRIME_REGISTRY_PASSWORD ;
 
-        # This encapsulates: login, qemu, build/push
-      - name: Build and push image
-        if: ${{ github.ref_type == 'tag' }}
-        uses: rancher/ecm-distro-tools/actions/publish-image@a83c77d8dae825438d29f94b25b665414aa07caf # master
-        with:
-          image: harvester-mcp-server
-          tag: ${{ github.ref_name }}
-          push-to-prime: true
-          push-to-public: false
-          prime-registry: ${{ env.STAGING_PRIME_REGISTRY }}
-          prime-repo: harvester
-          prime-username: ${{ env.STAGING_PRIME_REGISTRY_USERNAME }}
-          prime-password: ${{ env.STAGING_PRIME_REGISTRY_PASSWORD }}
-
+      # This encapsulates: login, qemu, build/push
       - name: Build and push head image
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_type != 'tag' }}
         uses: rancher/ecm-distro-tools/actions/publish-image@a83c77d8dae825438d29f94b25b665414aa07caf # master
         with:
           image: harvester-mcp-server
@@ -61,3 +49,25 @@ jobs:
           prime-repo: harvester
           prime-username: ${{ env.STAGING_PRIME_REGISTRY_USERNAME }}
           prime-password: ${{ env.STAGING_PRIME_REGISTRY_PASSWORD }}
+
+      - name: "Read vault secrets for prime registry"
+        if: ${{ github.ref_type == 'tag' }}
+        uses: rancher-eio/read-vault-secrets@7282bf97898cd1c16c89f837e0bb442e6d384c89 # main
+        with:
+          secrets: |
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials registry | PRIME_REGISTRY;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials username | PRIME_REGISTRY_USERNAME;
+            secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials password | PRIME_REGISTRY_PASSWORD;
+
+      - name: Build and push tag image
+        if: ${{ github.ref_type == 'tag' }}
+        uses: rancher/ecm-distro-tools/actions/publish-image@a83c77d8dae825438d29f94b25b665414aa07caf # master
+        with:
+          image: harvester-mcp-server
+          tag: ${{ github.ref_name }}
+          push-to-prime: true
+          push-to-public: false
+          prime-registry: ${{ env.PRIME_REGISTRY }}
+          prime-repo: harvester
+          prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
+          prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
