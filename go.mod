@@ -2,7 +2,7 @@ module github.com/harvester/harvester-mcp-server
 
 go 1.25.8
 
-toolchain go1.25.12
+toolchain go1.25.13
 
 // required for rancher/rancher pkg/apis
 // will need to be bumped alongside the rancher/rancher/pkg/apis
