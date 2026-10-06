@@ -23,6 +23,7 @@ Clone `rancher-ai-agent` repo:
 # export KUBECONFIG=/path/to/local/cluster/kubeconfig
 git clone https://github.com/rancher/rancher-ai-agent
 cd rancher-ai-agent
+git checkout v1.1.0
 ```
 
 For development, create a `values.yaml` first:
@@ -44,13 +45,13 @@ insecureSkipTls: true
 aiAgent:
   image:
     repository: rancher/rancher-ai-agent
-    tag: v1.1.0-alpha.8
+    tag: v1.1.0
     pullPolicy: IfNotPresent
 mcp:
   readOnly: false
   image:
     repository: rancher/rancher-ai-mcp
-    tag: v1.1.0-alpha.7
+    tag: v1.1.0
     pullPolicy: IfNotPresent
 
 log:
