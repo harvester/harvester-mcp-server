@@ -4,6 +4,7 @@ global:
 
 mcp:
   readOnly: false
+  env: []
   image:
     repository: rancher/harvester-mcp-server
     tag: dev

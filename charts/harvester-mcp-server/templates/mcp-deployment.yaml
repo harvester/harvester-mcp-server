@@ -3,8 +3,10 @@ kind: Deployment
 metadata:
   labels:
     app: harvester-mcp-server
+    app.kubernetes.io/name: harvester-mcp-server
+    app.kubernetes.io/instance: {{ .Release.Name }}
   name: harvester-mcp-server
-  namespace: cattle-ai-agent-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -14,6 +16,8 @@ spec:
     metadata:
       labels:
         app: harvester-mcp-server
+        app.kubernetes.io/name: harvester-mcp-server
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       serviceAccountName: harvester-mcp-cert-rotator-sa
       {{- with .Values.imagePullSecrets }}
@@ -47,6 +51,10 @@ spec:
           capabilities:
             drop:
               - ALL
+        {{- with .Values.mcp.env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         ports:
           - containerPort: 9092
         command: ["/usr/local/bin/mcp"]
