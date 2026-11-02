@@ -61,8 +61,6 @@ Each tool is exposed through the MCP protocol and can be invoked by the Rancher 
 | `createVirtualMachineImage`   | Creates a VirtualMachineImage resource by downloading from a URL                   |
 | `createVirtualMachine`        | Creates a VirtualMachine from an existing image                                    |
 | `createVirtualMachinePlan`    | Returns the manifest that would be submitted to create a VirtualMachine, without creating it |
-| `deleteVirtualMachine`        | Deletes a VirtualMachine                                                            |
-| `deleteVirtualMachinePlan`    | Returns the resource that would be deleted, without actually removing it           |
 
 ## Configuration
 

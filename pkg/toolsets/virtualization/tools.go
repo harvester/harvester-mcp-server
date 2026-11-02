@@ -141,24 +141,5 @@ Use this when the user wants to create a new virtual machine from an existing im
 Returns the full JSON manifest that would be submitted without actually creating the resource.
 Only used for displaying the resource when using human validation.`},
 			t.createVirtualMachinePlan)
-
-		mcp.AddTool(mcpServer, &mcp.Tool{
-			Name: "deleteVirtualMachine",
-			Meta: map[string]any{
-				toolsSetAnn: toolsSet,
-			},
-			Description: `Deletes a VirtualMachine on a Harvester / SUSE Virtualization cluster.
-Use this when the user wants to permanently remove a virtual machine.`},
-			t.deleteVirtualMachine)
-
-		mcp.AddTool(mcpServer, &mcp.Tool{
-			Name: "deleteVirtualMachinePlan",
-			Meta: map[string]any{
-				toolsSetAnn: toolsSet,
-			},
-			Description: `Plans to delete a VirtualMachine on a Harvester / SUSE Virtualization cluster.
-Returns the resource that would be deleted without actually removing it.
-Only used for displaying the target when using human validation.`},
-			t.deleteVirtualMachinePlan)
 	}
 }
