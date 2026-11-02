@@ -13,6 +13,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// deleteVirtualMachine and deleteVirtualMachinePlan are intentionally not
+// registered in tools.go: the Rancher AI UI cannot confirm "delete" plans
+// yet, which leaves the chat stuck awaiting confirmation. Register them
+// again once the UI supports delete confirmations.
+
 type deleteVirtualMachineParams struct {
 	Cluster   string `json:"cluster" jsonschema:"the name or ID of the Harvester cluster"`
 	Namespace string `json:"namespace,omitempty" jsonschema:"namespace of the virtual machine; defaults to 'default'"`
