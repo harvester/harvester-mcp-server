@@ -23,7 +23,7 @@ type createVirtualMachineParams struct {
 	Namespace   string `json:"namespace,omitempty" jsonschema:"namespace to create the VM in; defaults to 'default'"`
 	Name        string `json:"name" jsonschema:"name of the virtual machine"`
 	ImageID     string `json:"imageId" jsonschema:"VirtualMachineImage name (e.g. 'image-fnndf') or 'namespace/name' format (e.g. 'default/image-fnndf')"`
-	NetworkName string `json:"networkName" jsonschema:"name of the NetworkAttachmentDefinition to attach (e.g. 'hvst-dev-vlan')"`
+	NetworkName string `json:"networkName" jsonschema:"NetworkAttachmentDefinition to attach: a name in the VM namespace (e.g. 'hvst-dev-vlan') or 'namespace/name' format (e.g. 'default/hvst-dev-vlan')"`
 	CPUCores    int    `json:"cpuCores,omitempty" jsonschema:"number of CPU cores; defaults to 2"`
 	Memory      string `json:"memory,omitempty" jsonschema:"memory amount (e.g. '1Gi', '2Gi'); defaults to '1Gi'"`
 	DiskSize    string `json:"diskSize,omitempty" jsonschema:"boot disk size (e.g. '10Gi', '20Gi'); defaults to '10Gi'"`
@@ -100,7 +100,7 @@ func (t *Tools) createVirtualMachineObj(ctx context.Context, toolReq *mcp.CallTo
 		return nil, fmt.Errorf("failed to marshal volumeClaimTemplates: %w", err)
 	}
 
-	networkRef := ns + "/" + params.NetworkName
+	networkRef := qualifyNetworkName(ns, params.NetworkName)
 
 	return &unstructured.Unstructured{
 		Object: map[string]any{
@@ -234,4 +234,14 @@ func (t *Tools) createVirtualMachine(ctx context.Context, toolReq *mcp.CallToolR
 	return &mcp.CallToolResult{
 		Content: []mcp.Content{&mcp.TextContent{Text: mcpResponse}},
 	}, nil, nil
+}
+
+// qualifyNetworkName returns the Multus network reference for a VM in namespace ns.
+// A bare NetworkAttachmentDefinition name defaults to the VM namespace; a value that is
+// already in 'namespace/name' format is used as is.
+func qualifyNetworkName(ns, networkName string) string {
+	if strings.Contains(networkName, "/") {
+		return networkName
+	}
+	return ns + "/" + networkName
 }
